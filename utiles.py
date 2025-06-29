@@ -40,21 +40,21 @@ def pausar(mensaje="Presione una tecla para continuar..."):
     os.system('cls' if os.name == 'nt' else 'clear')
 
    
-def mostrar_tabla_productos(resultados, titulo= f"📋 Productos en Base de Datos"):
+def mostrar_tabla_productos(resultados, titulo="📋 Productos en Base de Datos", pausar_al_final=True):
     if resultados:
-
-        print(f"\n{titulo}\n")
-        print(f"{'ID':<4} {'Nombre':<20} {'Cant.':<8} {'Precio':<10} {'Categoría'}")
-
+        print(titulo)
+        print(f"{'ID':<4} {'Nombre':<20} {'Cantidad':<10} {'Precio':<10} {'Categoría':<15}")
+        print("-" * 60)
         for fila in resultados:
-            id_, nombre, cantidad, precio, categoria = fila
-            print(f"{id_:<4} {nombre:<20} {cantidad:<8} {precio:<10.2f} {categoria}")
-
+            print(f"{fila[0]:<4} {fila[1]:<20} {fila[2]:<10} {fila[3]:<10.2f} {fila[4]:<15}")
         print(f"\n✅ Total de productos: {len(resultados)}\n")
     else:
-        print("\n⚠ No hay productos en la base de datos.")
-    
-    pausar()
+        print("⚠ No hay productos en la base de datos.")
+
+    if pausar_al_final:
+        pausar()
+
+
 
 def error_opcion():
     print("❌ Opción inválida. Debe ingresar un número del 0 al 8.")

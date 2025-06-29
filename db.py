@@ -61,7 +61,7 @@ def inicializar_base():
     finally:
         conn.close()
 
-def mostrar_producto_por_id(id_producto):
+def mostrar_producto_por_id(id_producto, mensaje_pausa="Presione una tecla para continuar..."):
     conn, cursor = obtener_conexion_segura()
     if conn is None:
         return
@@ -76,7 +76,8 @@ def mostrar_producto_por_id(id_producto):
         print(f"Error al mostrar producto por ID: {e}")
     finally:
         conn.close()
-    pausar("Producto encontrado. Presione una tecla para continuar...")
+    pausar(mensaje_pausa)
+
 
 
 def ingresar_productos():
@@ -141,7 +142,7 @@ def buscar_por(campo, valor):
         cursor.execute(f"SELECT * FROM productos WHERE {campo} = ?", (valor,))
         resultados = cursor.fetchall()
         mostrar_tabla_productos(resultados, titulo=(f"📋 Productos en Base de Datos, búsqueda por {campo} == {valor}"))
-        pausar()
+        #pausar()
     except Exception as e:
         print(f"Error: {e}")
     finally:
@@ -198,7 +199,7 @@ def eliminar_id():
         return
 
     # Mostrar el producto antes de confirmar
-    mostrar_tabla_productos([encontrado], titulo="🔍 Registro a eliminar")
+    mostrar_tabla_productos([encontrado], titulo="🔍 Registro a eliminar", pausar_al_final=False)
 
     respuesta = input("¿Está seguro que quiere eliminar este registro? (s/n): ").strip().lower()
     if respuesta != 's':
@@ -219,7 +220,6 @@ def eliminar_id():
 
     pausar("Producto eliminado. Presione una tecla para continuar...")
 
-#Permite actualizar (cambiar) el valor de uno o mas campos
 def actualizar_id():
     limpiar_pantalla()
     conn, cursor = obtener_conexion_segura()
@@ -232,8 +232,8 @@ def actualizar_id():
         if not encontrado:
             return
 
-        # Mostrar el producto antes de confirmar si se quiere modificar
-        mostrar_tabla_productos([encontrado], titulo="🔍 Registro encontrado")
+        # Mostrar el producto antes de confirmar, sin pausa
+        mostrar_tabla_productos([encontrado], titulo="🔍 Registro encontrado", pausar_al_final=False)
 
 
         respuesta = input("¿Está seguro que quiere modificar este registro? (s/n): ").strip().lower()
@@ -283,7 +283,8 @@ def actualizar_id():
                 return
 
         conn.commit()
-        mostrar_producto_por_id(id_producto)
+        mostrar_producto_por_id(id_producto, mensaje_pausa="Producto actualizado. Presione una tecla para continuar...")
+
         print("✅ Registro actualizado correctamente.\n\n\n\n\n")
 
     except Exception as e:
@@ -291,6 +292,7 @@ def actualizar_id():
         print(f"❌ Error al actualizar el producto: {e}")
     finally:
         conn.close()
+
 
 def reportar_bajo_inventario():    
     limpiar_pantalla()
