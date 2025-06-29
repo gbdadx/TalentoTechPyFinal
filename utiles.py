@@ -49,7 +49,7 @@ def mostrar_tabla_productos(resultados, titulo="📋 Productos en Base de Datos"
             print(f"{fila[0]:<4} {fila[1]:<20} {fila[2]:<10} {fila[3]:<10.2f} {fila[4]:<15}")
         print(f"\n✅ Total de productos: {len(resultados)}\n")
     else:
-        print("⚠ No hay productos en la base de datos.")
+        print(f"⚠️  No existe en la base de datos. Verifique el nombre.")
 
     if pausar_al_final:
         pausar()
@@ -61,3 +61,9 @@ def error_opcion():
 
 def limpiar_pantalla():
     os.system('cls' if os.name == 'nt' else 'clear')
+
+
+# Symbols
+error_symbol = "❌"  # Red cross
+warning_symbol = "⚠️"  # Yellow triangle
+success_symbol = "✅"  # Green check mark

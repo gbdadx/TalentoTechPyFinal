@@ -12,7 +12,7 @@ def obtener_conexion():
         cursor = conn.cursor()
         return conn, cursor
     except sqlite3.Error as e:
-        print(f"Error al conectar con la base de datos: {e}")
+        print(f"❌Error al conectar con la base de datos: {e}")
         return None, None
 
 def obtener_conexion_segura():
@@ -42,7 +42,7 @@ def crear_tabla():
         conn.commit()
     except Exception as e:
         conn.rollback()
-        print(f"Error al crear la tabla: {e}")
+        print(f"❌Error al crear la tabla: {e}")
     finally:
         conn.close()
 
@@ -57,7 +57,7 @@ def inicializar_base():
         conn.commit()
     except Exception as e:
         conn.rollback()
-        print(f"Error al inicializar la base: {e}")
+        print(f"❌ Error al inicializar la base: {e}")
     finally:
         conn.close()
 
@@ -73,7 +73,7 @@ def mostrar_producto_por_id(id_producto, mensaje_pausa="Presione una tecla para 
         else:
             print("❌ Producto no encontrado.")
     except Exception as e:
-        print(f"Error al mostrar producto por ID: {e}")
+        print(f"❌ Error al mostrar producto por ID: {e}")
     finally:
         conn.close()
     pausar(mensaje_pausa)
@@ -107,7 +107,7 @@ def ingresar_productos():
         print(f"❌ Error al ingresar productos: {e}")
     finally:
         conn.close()
-        pausar("Producto(s) ingresado(s). Presione una tecla para volver al menú...")
+        pausar("✅Producto(s) ingresado(s). Presione una tecla para volver al menú...")
 
 
 def listar_productos():
@@ -144,7 +144,7 @@ def buscar_por(campo, valor):
         mostrar_tabla_productos(resultados, titulo=(f"📋 Productos en Base de Datos, búsqueda por {campo} == {valor}"))
         #pausar()
     except Exception as e:
-        print(f"Error: {e}")
+        print(f"❌Error: {e}")
     finally:
         conn.close()
 
@@ -155,7 +155,7 @@ def buscar_nombre():
         nombre = pedir_texto_no_vacio("Ingrese el nombre del producto: ").lower()
         buscar_por('nombre', nombre)
     except Exception as e:
-        print(f"Error al buscar por nombre: {e}")
+        print(f"❌Error al buscar por nombre: {e}")
 
 def buscar_categoria():
     limpiar_pantalla()
@@ -164,7 +164,7 @@ def buscar_categoria():
         categoria = pedir_texto_no_vacio("Ingrese la categoria del producto: ").lower()
         buscar_por('categoria', categoria)
     except Exception as e:
-        print(f"Error al buscar por categoria: {e}")
+        print(f"❌Error al buscar por categoria: {e}")
 
 def buscar_id():
     limpiar_pantalla()
@@ -179,14 +179,14 @@ def buscar_id():
         cursor.execute("SELECT * FROM productos WHERE id = ?", (ID,))
         resultado = cursor.fetchone()
     except Exception as e:
-        print(f"Error al buscar el producto: {e}")
+        print(f"❌ Error al buscar el producto: {e}")
     finally:
         conn.close()
 
     if resultado:
         return resultado 
     else:
-        print("❌ No se encontró ningún producto con ese ID.")
+        pausar("⚠️ No se encontró ningún producto con ese ID.")
         return None
 
 # Elimina el registro segun ID ingresada
@@ -218,7 +218,7 @@ def eliminar_id():
     finally:
         conn.close()
 
-    pausar("Producto eliminado. Presione una tecla para continuar...")
+    pausar("✅Producto eliminado. Presione una tecla para continuar...")
 
 def actualizar_id():
     limpiar_pantalla()
@@ -230,6 +230,7 @@ def actualizar_id():
         encontrado = buscar_id()
         print("\n\n")
         if not encontrado:
+            pausar()
             return
 
         # Mostrar el producto antes de confirmar, sin pausa
@@ -283,9 +284,8 @@ def actualizar_id():
                 return
 
         conn.commit()
-        mostrar_producto_por_id(id_producto, mensaje_pausa="Producto actualizado. Presione una tecla para continuar...")
+        mostrar_producto_por_id(id_producto, mensaje_pausa="✅ Registro actualizado correctamente.\n\n")
 
-        print("✅ Registro actualizado correctamente.\n\n\n\n\n")
 
     except Exception as e:
         conn.rollback()
@@ -306,6 +306,6 @@ def reportar_bajo_inventario():
         resultados = cursor.fetchall()
         mostrar_tabla_productos(resultados, titulo=(f"📋 Productos con inventario ≤ {cantidad}"))
     except Exception as e:
-        print(f"Error al generar el reporte: {e}")
+        print(f"❌Error al generar el reporte: {e}")
     finally:
         conn.close()

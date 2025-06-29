@@ -7,6 +7,7 @@ from utiles import *
 
 # Menu funciones-opciones 
 def mostrar_menu():
+    limpiar_pantalla()
     print( "📦 MENÚ DE PRODUCTOS")
     print("""
 1. Ingresar producto  

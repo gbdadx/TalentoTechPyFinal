@@ -7,8 +7,6 @@ from vista import *
 from db import *
 from utiles import limpiar_pantalla
 
-limpiar_pantalla()
-
 # Menu principal
 while True:
     mostrar_menu()
