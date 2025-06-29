@@ -7,13 +7,28 @@ from utiles import *
 
 #establece conexion
 def obtener_conexion():
-    conn = sqlite3.connect('productos.db')
-    cursor = conn.cursor()
+    try:
+        conn = sqlite3.connect('productos.db')
+        cursor = conn.cursor()
+        return conn, cursor
+    except sqlite3.Error as e:
+        print(f"Error al conectar con la base de datos: {e}")
+        return None, None
+
+def obtener_conexion_segura():
+    conn, cursor = obtener_conexion()
+    if conn is None or cursor is None:
+        print("❌ No se pudo establecer conexión a la base de datos.")
+        return None, None
     return conn, cursor
 
 #crear tabla productos si no existe
 def crear_tabla():
-    conn, cursor = obtener_conexion()# Abro conexión local
+    conn, cursor = obtener_conexion_segura()
+    if conn is None:
+        return
+
+
     try:
         cursor.execute("""
             CREATE TABLE IF NOT EXISTS productos (
@@ -33,7 +48,10 @@ def crear_tabla():
 
 # Ejecuta crear_tabla() dentro de una transacción con manejo de errores.
 def inicializar_base():
-    conn, cursor = obtener_conexion()
+    conn, cursor = obtener_conexion_segura()
+    if conn is None:
+        return
+
     try:
         crear_tabla()
         conn.commit()
@@ -44,7 +62,9 @@ def inicializar_base():
         conn.close()
 
 def mostrar_producto_por_id(id_producto):
-    conn, cursor = obtener_conexion()  
+    conn, cursor = obtener_conexion_segura()
+    if conn is None:
+        return
     try:
         cursor.execute("SELECT * FROM productos WHERE id = ?", (id_producto,))
         resultado = cursor.fetchone()
@@ -62,7 +82,9 @@ def mostrar_producto_por_id(id_producto):
 def ingresar_productos():
     limpiar_pantalla()
     print("INGRESAR PRODUCTOS")
-    conn, cursor = obtener_conexion()
+    conn, cursor = obtener_conexion_segura()
+    if conn is None:
+        return
     try:
         while True:
             producto = pedir_texto_no_vacio("Ingrese el nombre del producto: ").lower()
@@ -89,7 +111,9 @@ def ingresar_productos():
 
 def listar_productos():
     limpiar_pantalla()
-    conn, cursor = obtener_conexion()
+    conn, cursor = obtener_conexion_segura()
+    if conn is None:
+        return
     try:
         cursor.execute("SELECT * FROM productos")
         resultados = cursor.fetchall()
@@ -109,7 +133,10 @@ def buscar_por(campo, valor):
         print("Campo no válido")
         return
 
-    conn, cursor = obtener_conexion()
+    conn, cursor = obtener_conexion_segura()
+    if conn is None:
+        return
+    
     try:
         cursor.execute(f"SELECT * FROM productos WHERE {campo} = ?", (valor,))
         resultados = cursor.fetchall()
@@ -141,7 +168,9 @@ def buscar_categoria():
 def buscar_id():
     limpiar_pantalla()
     print("Buscar por ID")
-    conn, cursor = obtener_conexion()
+    conn, cursor = obtener_conexion_segura()
+    if conn is None:
+        return
     resultado = None
 
     try:
@@ -165,8 +194,6 @@ def eliminar_id():
     print("Eliminar por ID")
     encontrado = buscar_id()  # Usa su propia conexión
 
-    encontrado = buscar_id()
-
     if not encontrado:
         return
 
@@ -174,10 +201,13 @@ def eliminar_id():
     mostrar_tabla_productos([encontrado], titulo="🔍 Registro a eliminar")
 
     respuesta = input("¿Está seguro que quiere eliminar este registro? (s/n): ").strip().lower()
-
-
+    if respuesta != 's':
+        print("❌ Operación cancelada.")
+        return
     try:
-        conn, cursor = obtener_conexion()
+        conn, cursor = obtener_conexion_segura()
+        if conn is None:
+                return
         cursor.execute("DELETE FROM productos WHERE id = ?", (encontrado[0],))
         conn.commit()
         print("✅ Registro eliminado correctamente.\n\n\n\n\n\n")
@@ -192,7 +222,9 @@ def eliminar_id():
 #Permite actualizar (cambiar) el valor de uno o mas campos
 def actualizar_id():
     limpiar_pantalla()
-    conn, cursor = obtener_conexion()
+    conn, cursor = obtener_conexion_segura()
+    if conn is None:
+        return
     try:
         print("Actualizar por ID")
         encontrado = buscar_id()
@@ -263,7 +295,9 @@ def actualizar_id():
 def reportar_bajo_inventario():    
     limpiar_pantalla()
 
-    conn, cursor = obtener_conexion()
+    conn, cursor = obtener_conexion_segura()
+    if conn is None:
+        return
     try:
         cantidad = pedir_entero_positivo("Ingrese el límite inferior de stock: ")
         cursor.execute("SELECT * FROM productos WHERE cantidad <= ?", (cantidad,))
