@@ -8,6 +8,8 @@ from db import *
 from utiles import limpiar_pantalla
 
 limpiar_pantalla()
+
+# Menu principal
 while True:
     mostrar_menu()
     opcion = input("Elija una opción (0 al 8): ").strip()

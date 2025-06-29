@@ -5,7 +5,7 @@
 # importando modulos
 from utiles import *
 
-#funciones 
+# Menu funciones-opciones 
 def mostrar_menu():
     print( "📦 MENÚ DE PRODUCTOS")
     print("""
