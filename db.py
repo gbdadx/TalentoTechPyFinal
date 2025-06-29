@@ -1,15 +1,19 @@
 # db.py: Gestiona la base de datos SQLite con todas las operaciones CRUD para los productos.
+# Todas las funciones incluyen manejo de errores con try-except-finally.
+# Las funciones que modifican datos (no SELECT) usan transacciones con commit y rollback.
 
 import sqlite3
 from utiles import *
 
+#establece conexion
 def obtener_conexion():
     conn = sqlite3.connect('productos.db')
     cursor = conn.cursor()
     return conn, cursor
 
+#crear tabla productos si no existe
 def crear_tabla():
-    conn, cursor = obtener_conexion()
+    conn, cursor = obtener_conexion()# Abro conexión local
     try:
         cursor.execute("""
             CREATE TABLE IF NOT EXISTS productos (
@@ -27,6 +31,7 @@ def crear_tabla():
     finally:
         conn.close()
 
+# Ejecuta crear_tabla() dentro de una transacción con manejo de errores.
 def inicializar_base():
     conn, cursor = obtener_conexion()
     try:
@@ -39,7 +44,7 @@ def inicializar_base():
         conn.close()
 
 def mostrar_producto_por_id(id_producto):
-    conn, cursor = obtener_conexion()  # Abro conexión local
+    conn, cursor = obtener_conexion()  
     try:
         cursor.execute("SELECT * FROM productos WHERE id = ?", (id_producto,))
         resultado = cursor.fetchone()
@@ -93,7 +98,8 @@ def listar_productos():
         print(f"Error: {e}")
     finally:
         conn.close()
- 
+
+# Función auxiliar que realiza una búsqueda en la tabla productos según el campo y valor indicados.
 def buscar_por(campo, valor):
     limpiar_pantalla()
     print(f"... buscando por {campo} ...")
@@ -153,7 +159,7 @@ def buscar_id():
         print("❌ No se encontró ningún producto con ese ID.")
         return None
 
-
+# Elimina el registro segun ID ingresada
 def eliminar_id():
     limpiar_pantalla()
     print("Eliminar por ID")
@@ -183,7 +189,7 @@ def eliminar_id():
 
     pausar("Producto eliminado. Presione una tecla para continuar...")
 
-
+#Permite actualizar (cambiar) el valor de uno o mas campos
 def actualizar_id():
     limpiar_pantalla()
     conn, cursor = obtener_conexion()
@@ -254,4 +260,16 @@ def actualizar_id():
     finally:
         conn.close()
 
+def reportar_bajo_inventario():    
+    limpiar_pantalla()
 
+    conn, cursor = obtener_conexion()
+    try:
+        cantidad = pedir_entero_positivo("Ingrese el límite inferior de stock: ")
+        cursor.execute("SELECT * FROM productos WHERE cantidad <= ?", (cantidad,))
+        resultados = cursor.fetchall()
+        mostrar_tabla_productos(resultados, titulo=(f"📋 Productos con inventario ≤ {cantidad}"))
+    except Exception as e:
+        print(f"Error al generar el reporte: {e}")
+    finally:
+        conn.close()

@@ -2,8 +2,8 @@
 # Controla el flujo principal del programa .
 
 
-
-from modulos import *
+#importa modulos requeridos para el flujo principal
+from vista import *
 from db import *
 from utiles import limpiar_pantalla
 

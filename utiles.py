@@ -1,6 +1,5 @@
 #UTILES.PY
-# Provee funciones auxiliares reutilizables como validaciones,
-#  pausa y formato de salida, compartidas entre los otros módulos.
+# Provee funciones auxiliares reutilizables como validaciones, limpiar pantalla, pausa, etc
 
 import os
 
@@ -58,8 +57,6 @@ def mostrar_tabla_productos(resultados, titulo= f"📋 Productos en Base de Dato
 
 def error_opcion():
     print("❌ Opción inválida. Debe ingresar un número del 0 al 8.")
-
-import os
 
 def limpiar_pantalla():
     os.system('cls' if os.name == 'nt' else 'clear')
