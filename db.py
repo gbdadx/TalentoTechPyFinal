@@ -82,13 +82,13 @@ def mostrar_producto_por_id(id_producto, mensaje_pausa="Presione una tecla para 
 
 def ingresar_productos():
     limpiar_pantalla()
-    print("INGRESAR PRODUCTOS")
+    print(Fore.WHITE+Back.CYAN +f"    INGRESAR PRODUCTOS    \n")
     conn, cursor = obtener_conexion_segura()
     if conn is None:
         return
     try:
         while True:
-            producto = pedir_texto_no_vacio("Ingrese el nombre del producto: ").lower()
+            producto = pedir_texto_no_vacio(Back.BLACK+ "Ingrese el nombre del producto: ").lower()
             cantidad = pedir_entero_positivo(f"Ingrese la cantidad del producto {producto}: ")
             precio = pedir_decimal_positivo(f"Ingrese el precio del producto {producto}: ")
             categoria = pedir_texto_no_vacio(f"Ingrese la categoría del producto {producto}: ").lower()
@@ -150,7 +150,7 @@ def buscar_por(campo, valor):
 
 def buscar_nombre():
     limpiar_pantalla()
-    print("Buscar por nombre")
+    print(Fore.WHITE+Back.CYAN +f"   Buscar por nombre   ")
     try:
         nombre = pedir_texto_no_vacio("Ingrese el nombre del producto: ").lower()
         buscar_por('nombre', nombre)
@@ -159,7 +159,7 @@ def buscar_nombre():
 
 def buscar_categoria():
     limpiar_pantalla()
-    print("Buscar por categoria")
+    print(Fore.WHITE+Back.CYAN +f"   Buscar por categoria   ")
     try:
         categoria = pedir_texto_no_vacio("Ingrese la categoria del producto: ").lower()
         buscar_por('categoria', categoria)
@@ -168,7 +168,7 @@ def buscar_categoria():
 
 def buscar_id():
     limpiar_pantalla()
-    print("Buscar por ID")
+    print(Fore.WHITE+Back.CYAN +f"   Buscar por ID   ")
     conn, cursor = obtener_conexion_segura()
     if conn is None:
         return
@@ -192,7 +192,7 @@ def buscar_id():
 # Elimina el registro segun ID ingresada
 def eliminar_id():
     limpiar_pantalla()
-    print("Eliminar por ID")
+    print(Fore.WHITE+Back.CYAN +f"   Eliminar por ID   ")
     encontrado = buscar_id()  # Usa su propia conexión
 
     if not encontrado:
@@ -226,7 +226,8 @@ def actualizar_id():
     if conn is None:
         return
     try:
-        print("Actualizar por ID")
+        print(Fore.WHITE+Back.CYAN +f"   Actualizar por ID   ")
+        input()
         encontrado = buscar_id()
         print("\n\n")
         if not encontrado:
