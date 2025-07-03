@@ -9,9 +9,13 @@ def pedir_texto_no_vacio(prompt):
     while True:
         texto = input(prompt).strip()
         if texto == "":
-            print("Error: no puede estar vacío. Intente de nuevo.")
+            print(Back.RED + Fore.WHITE + "Error: no puede estar vacío. Intente de nuevo.")
         else:
             return texto
+
+def pedir_texto(prompt):
+        texto = input(prompt).strip()
+        return texto
 
 def pedir_entero_positivo(prompt):
     while True:
@@ -45,14 +49,17 @@ def pausar(mensaje="Presione una tecla para continuar..."):
 def mostrar_tabla_productos(resultados, titulo="📋 Productos en Base de Datos", pausar_al_final=True):
     limpiar_pantalla()
     if resultados:
-        print(Back.LIGHTCYAN_EX + titulo +'\n')
-        print(Back.BLACK + Fore.WHITE +f"{'ID':<4} {'Nombre':<20} {'Cantidad':<10} {'Precio':<10} {'Categoría':<15}")
-        print("-" * 60)
+        print(Back.LIGHTCYAN_EX + titulo + '\n')
+        print(Back.BLACK + Fore.WHITE + f"{'ID':^6} {'Nombre':^24} {'Descripción':^30} {'Cantidad':^10} {'Precio':>10} {'Categoría':^15}")
+
+        print("-" * 100)
         for fila in resultados:
-            print(f"{fila[0]:<4} {fila[1]:<20} {fila[2]:<10} {fila[3]:<10.2f} {fila[4]:<15}")
+            id_, nombre, descripcion, cantidad, precio, categoria = fila
+            print(f"{id_:^6} {nombre:<24} {descripcion:^30}{cantidad:>10}  {precio:>10.2f} {categoria:^15}")
+
         print(f"\n✅ Total de productos: {len(resultados)}\n")
     else:
-        print(f"⚠️  No existe en la base de datos. Verifique el nombre.")
+        print(f"⚠️  No se encontraron productos con ese criterio.")
 
     if pausar_al_final:
         pausar()

@@ -30,10 +30,12 @@ def crear_tabla():
 
 
     try:
+        conn.execute("BEGIN")
         cursor.execute("""
             CREATE TABLE IF NOT EXISTS productos (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 nombre TEXT NOT NULL,
+                descripcion TEXT,
                 cantidad INTEGER NOT NULL,
                 precio REAL NOT NULL,
                 categoria TEXT 
@@ -53,6 +55,7 @@ def inicializar_base():
         return
 
     try:
+        conn.execute("BEGIN")
         crear_tabla()
         conn.commit()
     except Exception as e:
@@ -87,15 +90,17 @@ def ingresar_productos():
     if conn is None:
         return
     try:
+        conn.execute("BEGIN")
         while True:
             producto = pedir_texto_no_vacio(Back.BLACK+ "Ingrese el nombre del producto: ").lower()
+            descripcion = pedir_texto(Back.BLACK+ "Ingrese la descripcion del producto: ").lower()
             cantidad = pedir_entero_positivo(f"Ingrese la cantidad del producto {producto}: ")
             precio = pedir_decimal_positivo(f"Ingrese el precio del producto {producto}: ")
-            categoria = pedir_texto_no_vacio(f"Ingrese la categoría del producto {producto}: ").lower()
+            categoria = pedir_texto(f"Ingrese la categoría del producto {producto}: ").lower()
 
             cursor.execute(
-                "INSERT INTO productos (nombre, cantidad, precio, categoria) VALUES (?, ?, ?, ?)",
-                (producto, cantidad, precio, categoria)
+                "INSERT INTO productos (nombre, descripcion, cantidad, precio, categoria) VALUES (?,?, ?, ?, ?)",
+                (producto, descripcion, cantidad, precio, categoria)
             )
             conn.commit()
 
@@ -167,7 +172,6 @@ def buscar_categoria():
         print(f"❌Error al buscar por categoria: {e}")
 
 def buscar_id():
-    limpiar_pantalla()
     print(Fore.WHITE+Back.CYAN +f"   Buscar por ID   ")
     conn, cursor = obtener_conexion_segura()
     if conn is None:
@@ -209,6 +213,7 @@ def eliminar_id():
         conn, cursor = obtener_conexion_segura()
         if conn is None:
                 return
+        conn.execute("BEGIN")
         cursor.execute("DELETE FROM productos WHERE id = ?", (encontrado[0],))
         conn.commit()
         print("✅ Registro eliminado correctamente.\n\n\n\n\n\n")
@@ -227,16 +232,12 @@ def actualizar_id():
         return
     try:
         print(Fore.WHITE+Back.CYAN +f"   Actualizar por ID   ")
-        input()
         encontrado = buscar_id()
-        print("\n\n")
         if not encontrado:
             pausar()
             return
 
-        # Mostrar el producto antes de confirmar, sin pausa
         mostrar_tabla_productos([encontrado], titulo="🔍 Registro encontrado", pausar_al_final=False)
-
 
         respuesta = input("¿Está seguro que quiere modificar este registro? (s/n): ").strip().lower()
         if respuesta != 's':
@@ -245,13 +246,17 @@ def actualizar_id():
 
         opcion = input("""¿Qué campo/campos desea modificar?:  
         1. nombre
-        2. cantidad
-        3. precio
-        4. categoría
-        5. todos
-        → """)
+        2. descripcion
+        3. cantidad
+        4. precio
+        5. categoría
+        6. todos
+        → """).strip()
 
-        id_producto = encontrado[0]  
+        id_producto = encontrado[0]
+
+        #empieza la escritura real
+        conn.execute("BEGIN")
 
         match opcion:
             case '1':
@@ -259,25 +264,30 @@ def actualizar_id():
                 cursor.execute("UPDATE productos SET nombre = ? WHERE id = ?", (producto, id_producto))
 
             case '2':
+                descripcion = pedir_texto("Ingrese la descripcion del producto: ").lower()
+                cursor.execute("UPDATE productos SET descripcion = ? WHERE id = ?", (descripcion, id_producto))
+
+            case '3':
                 cantidad = pedir_entero_positivo("Ingrese la cantidad del producto: ")
                 cursor.execute("UPDATE productos SET cantidad = ? WHERE id = ?", (cantidad, id_producto))
 
-            case '3':
+            case '4':
                 precio = pedir_decimal_positivo("Ingrese el precio del producto: ")
                 cursor.execute("UPDATE productos SET precio = ? WHERE id = ?", (precio, id_producto))
 
-            case '4':
-                categoria = pedir_texto_no_vacio("Ingrese la categoría del producto: ").lower()
+            case '5':
+                categoria = pedir_texto("Ingrese la categoría del producto: ").lower()
                 cursor.execute("UPDATE productos SET categoria = ? WHERE id = ?", (categoria, id_producto))
 
-            case '5':
+            case '6':
                 producto = pedir_texto_no_vacio("Ingrese el nombre del producto: ").lower()
+                descripcion = pedir_texto("Ingrese la descripcion del producto: ").lower()
                 precio = pedir_decimal_positivo(f"Ingrese el precio del producto {producto}: ")
-                categoria = pedir_texto_no_vacio(f"Ingrese la categoría del producto {producto}: ").lower()
+                categoria = pedir_texto(f"Ingrese la categoría del producto {producto}: ").lower()
                 cantidad = pedir_entero_positivo(f"Ingrese la cantidad del producto {producto}: ")
                 cursor.execute(
-                    "UPDATE productos SET nombre = ?, precio = ?, categoria = ?, cantidad = ? WHERE id = ?",
-                    (producto, precio, categoria, cantidad, id_producto)
+                    "UPDATE productos SET nombre = ?, descripcion = ?, precio = ?, categoria = ?, cantidad = ? WHERE id = ?",
+                    (producto, descripcion, precio, categoria, cantidad, id_producto)
                 )
 
             case _:
@@ -287,13 +297,11 @@ def actualizar_id():
         conn.commit()
         mostrar_producto_por_id(id_producto, mensaje_pausa="✅ Registro actualizado correctamente.\n\n")
 
-
     except Exception as e:
         conn.rollback()
         print(f"❌ Error al actualizar el producto: {e}")
     finally:
         conn.close()
-
 
 def reportar_bajo_inventario():    
     limpiar_pantalla()
@@ -302,6 +310,7 @@ def reportar_bajo_inventario():
     if conn is None:
         return
     try:
+        conn.execute("BEGIN")
         cantidad = pedir_entero_positivo("Ingrese el límite inferior de stock: ")
         cursor.execute("SELECT * FROM productos WHERE cantidad <= ?", (cantidad,))
         resultados = cursor.fetchall()

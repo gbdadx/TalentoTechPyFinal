@@ -8,6 +8,8 @@ from db import *
 from utiles import limpiar_pantalla
 
 # Menu principal
+inicializar_base()
+
 while True:
     mostrar_menu()
     opcion = input("Elija una opción (0 al 8): ").strip()
@@ -28,6 +30,7 @@ while True:
             case 4:
                 buscar_categoria()
             case 5:
+                limpiar_pantalla()
                 resultado = buscar_id()
                 if resultado:
                         mostrar_tabla_productos([resultado], titulo="🔍 Producto encontrado por ID")
@@ -38,9 +41,8 @@ while True:
                 eliminar_id()
             case 8:
                 reportar_bajo_inventario()
-                
-            case _:
-                error_opcion()
     else:
         print("❌ Error: Debe ingresar un número.")
+    
+
 
