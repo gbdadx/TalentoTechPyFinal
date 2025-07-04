@@ -2,8 +2,8 @@
 # Provee funciones auxiliares reutilizables como validaciones, limpiar pantalla, pausa, etc
 
 import os
-from colorama import init, Fore, Back
-init()
+from colorama import Fore, Back, Style  
+
 
 def pedir_texto_no_vacio(prompt):
     while True:
@@ -47,12 +47,12 @@ def pausar(mensaje="Presione una tecla para continuar..."):
 
    
 def mostrar_tabla_productos(resultados, titulo="📋 Productos en Base de Datos", pausar_al_final=True):
-    limpiar_pantalla()
     if resultados:
         print(Back.LIGHTCYAN_EX + titulo + '\n')
         print(Back.BLACK + Fore.WHITE + f"{'ID':^6} {'Nombre':^24} {'Descripción':^30} {'Cantidad':^10} {'Precio':>10} {'Categoría':^15}")
 
         print("-" * 100)
+        print()
         for fila in resultados:
             id_, nombre, descripcion, cantidad, precio, categoria = fila
             print(f"{id_:^6} {nombre:<24} {descripcion:^30}{cantidad:>10}  {precio:>10.2f} {categoria:^15}")

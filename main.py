@@ -6,6 +6,9 @@
 from vista import *
 from db import *
 from utiles import limpiar_pantalla
+from colorama import Fore, Back, Style, init
+
+init(autoreset=True, convert=True)
 
 # Menu principal
 inicializar_base()
@@ -13,8 +16,16 @@ inicializar_base()
 while True:
     mostrar_menu()
     opcion = input("Elija una opción (0 al 8): ").strip()
-    
-    if opcion.isdigit():
+    if not opcion: # si no ingreso nada, vacio
+        print("⚠️ No ingresó ninguna opción. Intente de nuevo.")
+        continue
+    if not opcion.isdigit():# si ingreso algo que no es numero entero positivo
+        print("❌ Opción inválida. Debe ingresar un número.")
+        pausar()
+        continue
+
+    if opcion.isdigit(): # si ingreso  un numero entero positivo
+        limpiar_pantalla()
         match int(opcion):
             case 0:
                 print("Saliendo del programa... ¡Hasta luego!")
@@ -30,7 +41,6 @@ while True:
             case 4:
                 buscar_categoria()
             case 5:
-                limpiar_pantalla()
                 resultado = buscar_id()
                 if resultado:
                         mostrar_tabla_productos([resultado], titulo="🔍 Producto encontrado por ID")
@@ -41,8 +51,11 @@ while True:
                 eliminar_id()
             case 8:
                 reportar_bajo_inventario()
-    else:
-        print("❌ Error: Debe ingresar un número.")
+            case _:
+                print("❌ Error: Opcion no valida.")
+                pausar()
+    
+
     
 
 

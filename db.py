@@ -1,9 +1,10 @@
-# db.py: Gestiona la base de datos SQLite con todas las operaciones CRUD para los productos.
+# db.py: todas las operaciones CRUD para los productos.
 # Todas las funciones incluyen manejo de errores con try-except-finally.
 # Las funciones que modifican datos (no SELECT) usan transacciones con commit y rollback.
 
 import sqlite3
 from utiles import *
+from colorama import Fore, Back, Style
 
 #establece conexion
 def obtener_conexion():
@@ -27,10 +28,7 @@ def crear_tabla():
     conn, cursor = obtener_conexion_segura()
     if conn is None:
         return
-
-
     try:
-        conn.execute("BEGIN")
         cursor.execute("""
             CREATE TABLE IF NOT EXISTS productos (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -41,30 +39,17 @@ def crear_tabla():
                 categoria TEXT 
             )
         """)
-        conn.commit()
     except Exception as e:
-        conn.rollback()
         print(f"❌Error al crear la tabla: {e}")
     finally:
         conn.close()
 
 # Ejecuta crear_tabla() dentro de una transacción con manejo de errores.
 def inicializar_base():
-    conn, cursor = obtener_conexion_segura()
-    if conn is None:
-        return
+    crear_tabla()
 
-    try:
-        conn.execute("BEGIN")
-        crear_tabla()
-        conn.commit()
-    except Exception as e:
-        conn.rollback()
-        print(f"❌ Error al inicializar la base: {e}")
-    finally:
-        conn.close()
 
-def mostrar_producto_por_id(id_producto, mensaje_pausa="Presione una tecla para continuar..."):
+def mostrar_producto_por_id(id_producto):
     conn, cursor = obtener_conexion_segura()
     if conn is None:
         return
@@ -79,7 +64,6 @@ def mostrar_producto_por_id(id_producto, mensaje_pausa="Presione una tecla para 
         print(f"❌ Error al mostrar producto por ID: {e}")
     finally:
         conn.close()
-    pausar(mensaje_pausa)
 
 
 
@@ -116,7 +100,6 @@ def ingresar_productos():
 
 
 def listar_productos():
-    limpiar_pantalla()
     conn, cursor = obtener_conexion_segura()
     if conn is None:
         return
@@ -131,7 +114,6 @@ def listar_productos():
 
 # Función auxiliar que realiza una búsqueda en la tabla productos según el campo y valor indicados.
 def buscar_por(campo, valor):
-    limpiar_pantalla()
     print(f"... buscando por {campo} ...")
 
     campos_validos = {'id', 'nombre', 'categoria'}

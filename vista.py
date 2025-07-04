@@ -4,14 +4,12 @@
 
 # importando modulos
 from utiles import *
-from colorama import Fore, Back, Style, init
+from colorama import Fore, Back, Style 
 
-init(autoreset=True, convert=True)  # convert=True arregla ANSI en Windows
 
 
 # Menu funciones-opciones 
 def mostrar_menu():
-    limpiar_pantalla()
     print(Style.BRIGHT + Back.CYAN + f" 📦 MENÚ DE PRODUCTOS " + Style.RESET_ALL)
     print(Back.BLACK + Fore.WHITE + """
 ╔════════════════════════════════════╗
