@@ -54,10 +54,9 @@ Se crea automáticamente al iniciar el programa. Los datos se almacenan en `prod
 
 ---
 
-### 🌟 Mejoras futuras
+### 🌟 Mejoras futuras (hecho)
 
-- Incorporación de librerías externas  para mejorar el estilo visual y la experiencia del usuario.
-- Exportación de reportes a archivos `.csv` o `.txt`
+- Incorporación de librerías externas  para mejorar el estilo visual y la experiencia del usuario.(Colorama)
 
 
 ---
