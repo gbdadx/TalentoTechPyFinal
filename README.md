@@ -33,6 +33,7 @@ gestor_productos/
 - Reportar productos con inventario bajo
 - Validaciones para evitar errores de entrada
 - Manejo de errores y transacciones con `try/except/finally`
+- Exportar datos a csv
 
 ---
 
