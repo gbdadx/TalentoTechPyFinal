@@ -36,7 +36,7 @@ def pedir_decimal_positivo(prompt):
         except ValueError:
             print("Error: debe ingresar un número válido (por ejemplo: 123.45 o 123)")
 
-"""def pausar(): # version original de pausar()
+"""def pausar(): # version original de pausar()-busque como limpiar la pantalla, y por eso cambie la funcion
     input("Presione una tecla para volver al menú principal...")"""
 
 # Pausa la ejecución y limpia la pantalla (permite personalizar el mensaje).

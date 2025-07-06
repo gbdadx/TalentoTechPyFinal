@@ -16,18 +16,12 @@ def obtener_conexion():
         print(f"❌Error al conectar con la base de datos: {e}")
         return None, None
 
-def obtener_conexion_segura():
-    conn, cursor = obtener_conexion()
-    if conn is None or cursor is None:
-        print("❌ No se pudo establecer conexión a la base de datos.")
-        return None, None
-    return conn, cursor
+
 
 #crear tabla productos si no existe
 def crear_tabla():
-    conn, cursor = obtener_conexion_segura()
-    if conn is None:
-        return
+    conn, cursor = obtener_conexion()
+    
     try:
         cursor.execute("""
             CREATE TABLE IF NOT EXISTS productos (
@@ -50,9 +44,8 @@ def inicializar_base():
 
 
 def mostrar_producto_por_id(id_producto):
-    conn, cursor = obtener_conexion_segura()
-    if conn is None:
-        return
+    conn, cursor = obtener_conexion()
+    
     try:
         cursor.execute("SELECT * FROM productos WHERE id = ?", (id_producto,))
         resultado = cursor.fetchone()
@@ -70,9 +63,8 @@ def mostrar_producto_por_id(id_producto):
 def ingresar_productos():
     limpiar_pantalla()
     print(Fore.WHITE+Back.CYAN +f"    INGRESAR PRODUCTOS    \n")
-    conn, cursor = obtener_conexion_segura()
-    if conn is None:
-        return
+    conn, cursor = obtener_conexion()
+    
     try:
         conn.execute("BEGIN")
         while True:
@@ -100,19 +92,24 @@ def ingresar_productos():
 
 
 def listar_productos():
-    conn, cursor = obtener_conexion_segura()
-    if conn is None:
-        return
+    conn, cursor = obtener_conexion()
+    
     try:
         cursor.execute("SELECT * FROM productos")
         resultados = cursor.fetchall()
-        mostrar_tabla_productos(resultados, titulo="📋 Productos en Base de Datos")
+
+        if resultados:
+            mostrar_tabla_productos(resultados, titulo="📋 Productos encontrados")
+        else:
+            print("⚠️ No se encontraron productos que coincidan.")
     except Exception as e:
-        print(f"Error: {e}")
+        print(f"❌ Error al listar productos: {e}")
     finally:
         conn.close()
 
-# Función auxiliar que realiza una búsqueda en la tabla productos según el campo y valor indicados.
+
+# Función auxiliar que realiza una búsqueda en la tabla productos según 
+# el campo y valor indicados. ES LLAMADA por las otras funciones de busqueda
 def buscar_por(campo, valor):
     print(f"... buscando por {campo} ...")
 
@@ -121,15 +118,15 @@ def buscar_por(campo, valor):
         print("Campo no válido")
         return
 
-    conn, cursor = obtener_conexion_segura()
-    if conn is None:
-        return
+    conn, cursor = obtener_conexion()
     
     try:
         cursor.execute(f"SELECT * FROM productos WHERE {campo} = ?", (valor,))
         resultados = cursor.fetchall()
-        mostrar_tabla_productos(resultados, titulo=(f"📋 Productos en Base de Datos, búsqueda por {campo} == {valor}"))
-        #pausar()
+        if resultados:
+            mostrar_tabla_productos(resultados, titulo=(f"📋 Productos en Base de Datos, búsqueda por {campo} == {valor}"))
+        else:
+            print("⚠️ No se encontraron productos que coincidan.")
     except Exception as e:
         print(f"❌Error: {e}")
     finally:
@@ -152,12 +149,11 @@ def buscar_categoria():
         buscar_por('categoria', categoria)
     except Exception as e:
         print(f"❌Error al buscar por categoria: {e}")
-
+#busqueda por id, es reutilizada por actualizar_id y eliminar_id
 def buscar_id():
     print(Fore.WHITE+Back.CYAN +f"   Buscar por ID   ")
-    conn, cursor = obtener_conexion_segura()
-    if conn is None:
-        return
+    conn, cursor = obtener_conexion()
+    
     resultado = None
 
     try:
@@ -180,7 +176,7 @@ def eliminar_id():
     limpiar_pantalla()
     print(Fore.WHITE+Back.CYAN +f"   Eliminar por ID   ")
     encontrado = buscar_id()  # Usa su propia conexión
-
+    # si no se encontró el producto, salir
     if not encontrado:
         return
 
@@ -192,9 +188,8 @@ def eliminar_id():
         print("❌ Operación cancelada.")
         return
     try:
-        conn, cursor = obtener_conexion_segura()
-        if conn is None:
-                return
+        conn, cursor = obtener_conexion()
+        
         conn.execute("BEGIN")
         cursor.execute("DELETE FROM productos WHERE id = ?", (encontrado[0],))
         conn.commit()
@@ -207,11 +202,11 @@ def eliminar_id():
 
     pausar("✅Producto eliminado. Presione una tecla para continuar...")
 
+# Actualiza el valor de un registro, con opciones para todos los campos (salvo ID)
 def actualizar_id():
     limpiar_pantalla()
-    conn, cursor = obtener_conexion_segura()
-    if conn is None:
-        return
+    conn, cursor = obtener_conexion()
+    
     try:
         print(Fore.WHITE+Back.CYAN +f"   Actualizar por ID   ")
         encontrado = buscar_id()
@@ -288,9 +283,8 @@ def actualizar_id():
 def reportar_bajo_inventario():    
     limpiar_pantalla()
 
-    conn, cursor = obtener_conexion_segura()
-    if conn is None:
-        return
+    conn, cursor = obtener_conexion()
+    
     try:
         conn.execute("BEGIN")
         cantidad = pedir_entero_positivo("Ingrese el límite inferior de stock: ")

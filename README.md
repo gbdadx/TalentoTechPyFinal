@@ -23,18 +23,6 @@ gestor_productos/
 
 ---
 
-### ▶️ Cómo ejecutar
-
-1. Cloná o descargá los archivos del proyecto. Github: https://github.com/gbdadx/TalentoTechPyFinal.git
-2. Abrí una terminal en la carpeta del proyecto.
-3. Ejecutá:
-
-```bash
-python main.py
-```
-
----
-
 ### 🤩 Funcionalidades
 
 - Ingresar productos (nombre, cantidad, precio, categoría)
@@ -52,15 +40,15 @@ python main.py
 
 Se crea automáticamente al iniciar el programa. Los datos se almacenan en `productos.db` con una tabla llamada `productos`.
 
----
-
-### 🌟 Mejoras futuras (hecho)
-
-- Incorporación de librerías externas  para mejorar el estilo visual y la experiencia del usuario.(Colorama)
-
 
 ---
 
 ### ✍️ Autor
 
 Proyecto realizado por **Gabriela Díaz** como práctica de programación en Python con fines educativos.
+
+
+---
+### Nota: 
+Intente buscar codigo que se repetia y armar funciones con eso.
+podria hacer una unica funcion para los mensajes de error que reciba por parametro el mensaje a mostrar. 
