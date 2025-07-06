@@ -21,6 +21,7 @@ def mostrar_menu():
 ║ 6. Actualizar por ID               ║
 ║ 7. Eliminar por ID                 ║
 ║ 8. Inventario bajo                 ║
+║ 9. Exportar a csv                  ║
 ║                                    ║
 ║ 0. Salir del programa              ║
 ╚════════════════════════════════════╝

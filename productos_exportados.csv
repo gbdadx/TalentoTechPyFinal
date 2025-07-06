@@ -1,0 +1,5 @@
+id,nombre,descripcion,cantidad,precio,categoria
+1,coco,fruta tropical,3,5.0,frutas
+2,mango,fruta tropical,45,400.0,frutas
+3,arroz,azucar blanco,1,1000.0,almacen
+7,gaita,instrumento musical,30,10000000.0,instrumento

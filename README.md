@@ -52,3 +52,4 @@ Proyecto realizado por **Gabriela Díaz** como práctica de programación en Pyt
 ### Nota: 
 Intente buscar codigo que se repetia y armar funciones con eso.
 podria hacer una unica funcion para los mensajes de error que reciba por parametro el mensaje a mostrar. 
+agregue una opcion '9' para generar un csv, que puede ser visto abriendolo en excel u otras planillas similares, o con la extension Excel Viewer

@@ -5,6 +5,7 @@
 import sqlite3
 from utiles import *
 from colorama import Fore, Back, Style
+import csv
 
 #establece conexion
 def obtener_conexion():
@@ -201,6 +202,35 @@ def eliminar_id():
         conn.close()
 
     pausar("✅Producto eliminado. Presione una tecla para continuar...")
+# Agregue la opcion de exportar a CSV
+import csv
+import os
+
+def exportar_productos_a_csv(nombre_archivo="productos_exportados.csv"):
+    conn, cursor = obtener_conexion()
+    
+    try:
+        cursor.execute("SELECT * FROM productos")
+        productos = cursor.fetchall()
+
+        if not productos:
+            print("⚠️ No hay productos para exportar.")
+            return
+
+        encabezados = ['id', 'nombre', 'descripcion', 'cantidad', 'precio', 'categoria']
+
+        with open(nombre_archivo, mode='w', newline='', encoding='utf-8') as archivo_csv:
+            writer = csv.writer(archivo_csv)
+            writer.writerow(encabezados)
+            writer.writerows(productos)
+
+        print("✅ Productos exportados correctamente'")
+
+    except Exception as e:
+        print(f"❌ Error al exportar productos: {e}")
+    finally:
+        conn.close()
+
 
 # Actualiza el valor de un registro, con opciones para todos los campos (salvo ID)
 def actualizar_id():

@@ -51,6 +51,9 @@ while True:
                 eliminar_id()
             case 8:
                 reportar_bajo_inventario()
+            case 9:
+                exportar_productos_a_csv()  # función que exporta a CSV o TXT
+                pausar()
             case _:
                 print("❌ Error: Opcion no valida.")
                 pausar()
