@@ -10,7 +10,7 @@ import csv
 #establece conexion
 def obtener_conexion():
     try:
-        conn = sqlite3.connect('productos.db')
+        conn = sqlite3.connect('inventario.db')# si no existe crea la bbdd 'inventario.db'
         cursor = conn.cursor()
         return conn, cursor
     except sqlite3.Error as e:
@@ -22,7 +22,7 @@ def obtener_conexion():
 #crear tabla productos si no existe
 def crear_tabla():
     conn, cursor = obtener_conexion()
-    
+    # si no existe crea la tabla 'productos' en la bbdd 'inventario'
     try:
         cursor.execute("""
             CREATE TABLE IF NOT EXISTS productos (
