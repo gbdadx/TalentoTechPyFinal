@@ -7,13 +7,13 @@ Este es un proyecto educativo en Python que permite gestionar productos utilizan
 
 ### 📁 Estructura del proyecto
 
-```
 gestor_productos/
-├── main.py               # Archivo principal, contiene el menú y bucle principal
-├── db.py                 # Funciones CRUD y acceso a la base de datos
-├── vista.py              # Funciones de interacción con el usuario (menú, validaciones, etc.)
-├── productos.db          # Base de datos SQLite (se genera automáticamente)
-```
+├── main.py           # Archivo principal con el menú y lógica principal
+├── db.py             # Funciones de conexión y CRUD con SQLite
+├── vista.py          # Funciones de interacción con el usuario (menús, validaciones, etc.)
+├── inventario.db     # Base de datos SQLite (se crea automáticamente si no existe)
+    └── [productos]   # Tabla dentro de la base de datos (creada desde el código)
+
 
 ---
 
@@ -39,7 +39,7 @@ gestor_productos/
 
 ### 💃 Base de datos
 
-Se crea automáticamente al iniciar el programa. Los datos se almacenan en `productos.db` con una tabla llamada `productos`.
+Se crea automáticamente al iniciar el programa. Los datos se almacenan en `inventario.db` con una tabla llamada `productos`.
 
 
 ---
